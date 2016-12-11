@@ -1,5 +1,6 @@
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
+import requests
 import re
 import os
 
@@ -24,13 +25,24 @@ def append_file(path, data):
 def crawl_title(url, directory, content='title'):
 
     print('Opening the webpage...')
+    # Using requests package to obtain the web code
+    response = requests.get(url)
+    souce_code = response.content
+    '''
+    # Using Urllib package to obtain the web code
     response = urlopen(url)
     souce_code = response.read()
 
     if response.getcode() is not 200:
         print("Can't reach the website....")
         return
+        '''
 
+    if response.status_code is not 200:
+        print("Can't reach the website....")
+        return
+
+    # Using the BeautifulSoup to gather imfomation
     print('Webpage is opened...')
     soup = BeautifulSoup(souce_code, 'html.parser')
     nodes = soup.select('h2.post-title a[href]')
